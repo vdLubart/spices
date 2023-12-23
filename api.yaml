@@ -1,0 +1,285 @@
+openapi: 3.0.3
+info:
+  title: Swagger Spices @ Home
+  description: |-
+    Document described available API endpoints for the Spices application
+  termsOfService: http://swagger.io/terms/
+  contact:
+    email: sl.lubart@gmail.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.0
+servers:
+  - url: http://localhost:3200
+tags:
+  - name: spice
+    description: Describe spices at home
+paths:
+  /spice:
+    post:
+      tags:
+        - spice
+      summary: Add a new spice to the store
+      description: Add a new spice to the store
+      operationId: addSpice
+      requestBody:
+        description: Create a new spice in the store
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewSpice'
+        required: true
+      responses:
+        '201':
+          description: New spice created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Spice'
+        '422':
+          description: Data validation exception
+#      security:
+#        - petstore_auth:
+#            - write:pets
+#            - read:pets
+    put:
+      tags:
+        - spice
+      summary: Update an existing spice
+      description: Update an existing spice by Id
+      operationId: updateSpice
+      requestBody:
+        description: Update an existent spice in the store
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Spice'
+        required: true
+      responses:
+        '200':
+          description: Spice was updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Spice'
+        '404':
+          description: Spice not found
+        '422':
+          description: Data validation exception
+#      security:
+#        - petstore_auth:
+#            - write:pets
+#            - read:pets
+  /spice/{id}:
+    get:
+      tags:
+        - spice
+      summary: Receive information over the spice
+      description: Get spice info by Id
+      operationId: getSpice
+      parameters:
+        - name: id
+          in: path
+          description: ID of spice to return
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Spice is found in the store
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Spice'
+        '404':
+          description: Spice not found
+    patch:
+      tags:
+        - spice
+      summary: Update one or few parameters of an existing spice
+      description: Partical update an existing spice by Id
+      operationId: patchSpice
+      requestBody:
+        description: Partical update an existing spice by Id
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchSpice'
+        required: true
+      responses:
+        '200':
+          description: Spice was updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Spice'
+        '404':
+          description: Spice not found
+        '422':
+          description: Data validation exception
+    delete:
+      tags:
+        - spice
+      summary: Delete a spice
+      description: Delete a spice by id
+      operationId: deleteSpice
+      parameters:
+        - name: id
+          in: path
+          description: The spice id that needs to be deleted
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Spice is deleted
+        '404':
+          description: User not found
+  /spice/list/:
+    post:
+      tags:
+        - spice
+      summary: Get list of spices
+      description: Get list of spices
+      operationId: spiceLice
+      requestBody:
+        description: Partical update an existing spice by Id
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SearchSpice'
+      responses:
+        '200':
+          description: Get spice list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Spice'
+  /spice/list/{status}:
+    post:
+      tags:
+        - spice
+      summary: Get list of spices
+      description: Get list of spices
+      operationId: spiceLice
+      parameters:
+        - name: status
+          in: path
+          description: Status of spices to be shown
+          required: true
+          schema:
+            type: string
+            enum: [ full, running_out, out_of_stock ]
+      requestBody:
+        description: Partical update an existing spice by Id
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SearchSpice'
+      responses:
+        '200':
+          description: Get spice list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Spice'
+components:
+  schemas:
+    SpiceId:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: 550e8400-e29b-41d4-a716-446655440000
+    SpiceStatus:
+      type: object
+      properties:
+        status:
+          type: string
+          description: spice ability in the store
+          enum:
+            - full
+            - running out
+            - out of stock
+    SpiceProperties:
+      type: object
+      properties:
+        name:
+          type: string
+          example: Rosemary
+      allOf:
+        - $ref: '#/components/schemas/SpiceStatus'
+    NewSpice:
+      required:
+        - name
+        - status
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/SpiceProperties'
+    Spice:
+      allOf:
+        - $ref: '#/components/schemas/SpiceId'
+        - $ref: '#/components/schemas/SpiceProperties'
+      required:
+        - id
+        - name
+        - status
+    PatchSpice:
+      allOf:
+        - $ref: '#/components/schemas/SpiceId'
+        - $ref: '#/components/schemas/SpiceProperties'
+      required:
+        - id
+    SearchSpice:
+      type: object
+      properties:
+        page:
+          type: number
+          default: 1
+          example: 1
+        onPage:
+          type: number
+          default: 10
+          example: 10
+        query:
+          type: string
+          default: ''
+          example: Rosemary
+#  requestBodies:
+#    Pet:
+#      description: Pet object that needs to be added to the store
+#      content:
+#        application/json:
+#          schema:
+#            $ref: '#/components/schemas/Pet'
+#        application/xml:
+#          schema:
+#            $ref: '#/components/schemas/Pet'
+#    UserArray:
+#      description: List of user object
+#      content:
+#        application/json:
+#          schema:
+#            type: array
+#            items:
+#              $ref: '#/components/schemas/User'
+#  securitySchemes:
+#    petstore_auth:
+#      type: oauth2
+#      flows:
+#        implicit:
+#          authorizationUrl: https://petstore3.swagger.io/oauth/authorize
+#          scopes:
+#            write:pets: modify pets in your account
+#            read:pets: read your pets
+#    api_key:
+#      type: apiKey
+#      name: api_key
+#      in: header
