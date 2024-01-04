@@ -9,7 +9,7 @@ info:
   license:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0.html
-  version: 1.0.0
+  version: 1.0.1
 servers:
   - url: http://localhost:3200
 tags:
@@ -39,6 +39,10 @@ paths:
                 $ref: '#/components/schemas/Spice'
         '422':
           description: Data validation exception
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
 #      security:
 #        - petstore_auth:
 #            - write:pets
@@ -67,6 +71,10 @@ paths:
           description: Spice not found
         '422':
           description: Data validation exception
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
 #      security:
 #        - petstore_auth:
 #            - write:pets
@@ -119,6 +127,10 @@ paths:
           description: Spice not found
         '422':
           description: Data validation exception
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
     delete:
       tags:
         - spice
@@ -252,6 +264,21 @@ components:
           type: string
           default: ''
           example: Rosemary
+    ValidationError:
+      type: object
+      properties:
+        message:
+          type: string
+          example: "validation_failed"
+        errors:
+          type: array
+          example: [
+            {
+              "property": "status",
+              "value": "half-full",
+              "message": "The value you selected is not a valid choice."
+            }
+          ]
 #  requestBodies:
 #    Pet:
 #      description: Pet object that needs to be added to the store
