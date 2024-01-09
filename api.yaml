@@ -9,7 +9,7 @@ info:
   license:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0.html
-  version: 1.0.1
+  version: 1.0.2
 servers:
   - url: http://localhost:3200
 tags:
@@ -150,34 +150,31 @@ paths:
         '404':
           description: User not found
   /spice/list/:
-    post:
+    get:
       tags:
         - spice
-      summary: Get list of spices
-      description: Get list of spices
-      operationId: spiceLice
-      requestBody:
-        description: Partical update an existing spice by Id
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/SearchSpice'
+      summary: Get spices list
+      description: Get paginated list of spices
+      operationId: spiceList
+      parameters:
+        - in: query
+          name: query
+          schema:
+            $ref: '#/components/schemas/PaginatedQuery'
       responses:
         '200':
           description: Get spice list
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Spice'
+                $ref: '#/components/schemas/PaginatedResponse'
   /spice/list/{status}:
-    post:
+    get:
       tags:
         - spice
-      summary: Get list of spices
-      description: Get list of spices
-      operationId: spiceLice
+      summary: Get list of spices with the specific status
+      description: Get paginated list of spices with the specific status
+      operationId: spiceList
       parameters:
         - name: status
           in: path
@@ -186,12 +183,10 @@ paths:
           schema:
             type: string
             enum: [ full, running_out, out_of_stock ]
-      requestBody:
-        description: Partical update an existing spice by Id
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/SearchSpice'
+        - in: query
+          name: query
+          schema:
+            $ref: '#/components/schemas/PaginatedQuery'
       responses:
         '200':
           description: Get spice list
@@ -200,7 +195,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Spice'
+                  $ref: '#/components/schemas/PaginatedResponse'
 components:
   schemas:
     SpiceId:
@@ -249,21 +244,6 @@ components:
         - $ref: '#/components/schemas/SpiceProperties'
       required:
         - id
-    SearchSpice:
-      type: object
-      properties:
-        page:
-          type: number
-          default: 1
-          example: 1
-        onPage:
-          type: number
-          default: 10
-          example: 10
-        query:
-          type: string
-          default: ''
-          example: Rosemary
     ValidationError:
       type: object
       properties:
@@ -279,7 +259,41 @@ components:
               "message": "The value you selected is not a valid choice."
             }
           ]
-#  requestBodies:
+    PaginatedQuery:
+      type: object
+      properties:
+        q:
+          type: string
+          example: 'Rosm'
+        page:
+          type: number
+          default: 1
+          example: 2
+        perPage:
+          type: number
+          default: 10
+          example: 5
+    PaginatedResponse:
+      type: object
+      properties:
+        page:
+          type: number
+          description: The number of the returned page
+          default: 1
+          example: 2
+        perPage:
+          type: number
+          description: The item amount on the page
+          default: 10
+          example: 5
+        total:
+          type: number
+          description: Total number of found items
+          example: 173
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Spice'
 #    Pet:
 #      description: Pet object that needs to be added to the store
 #      content:
