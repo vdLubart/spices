@@ -9,7 +9,7 @@ info:
   license:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0.html
-  version: 1.0.2
+  version: 1.0.3
 servers:
   - url: http://localhost:3200
 tags:
@@ -79,30 +79,6 @@ paths:
 #        - petstore_auth:
 #            - write:pets
 #            - read:pets
-  /spice/{id}:
-    get:
-      tags:
-        - spice
-      summary: Receive information over the spice
-      description: Get spice info by Id
-      operationId: getSpice
-      parameters:
-        - name: id
-          in: path
-          description: ID of spice to return
-          required: true
-          schema:
-            type: string
-            format: uuid
-      responses:
-        '200':
-          description: Spice is found in the store
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Spice'
-        '404':
-          description: Spice not found
     patch:
       tags:
         - spice
@@ -131,6 +107,30 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ValidationError'
+  /spice/{id}:
+    get:
+      tags:
+        - spice
+      summary: Receive information over the spice
+      description: Get spice info by Id
+      operationId: getSpice
+      parameters:
+        - name: id
+          in: path
+          description: ID of spice to return
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Spice is found in the store
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Spice'
+        '404':
+          description: Spice not found
     delete:
       tags:
         - spice
@@ -145,10 +145,10 @@ paths:
           schema:
             type: string
       responses:
-        '200':
+        '204':
           description: Spice is deleted
         '404':
-          description: User not found
+          description: Spice not found
   /spice/list/:
     get:
       tags:
@@ -196,6 +196,38 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/PaginatedResponse'
+  /spices/set/status/{status}:
+    post:
+      tags:
+        - spice
+      summary: Mass update spices to set status
+      description: Updates mulitple spices to set some status
+      operationId: massUpdateSpices
+      parameters:
+        - in: path
+          name: status
+          description: Status to be set
+          schema:
+            type: string
+            enum: [ full, running_out, out_of_stock ]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - ids
+              properties:
+                ids:
+                  type: array
+                  items:
+                    type: string
+                    example: '1'
+      responses:
+        '204':
+          description: Status for all spices was successfully updated
+        '422':
+          description: Validation error
 components:
   schemas:
     SpiceId:
@@ -249,7 +281,7 @@ components:
       properties:
         message:
           type: string
-          example: "validation_failed"
+          example: "Validation failed"
         errors:
           type: array
           example: [
