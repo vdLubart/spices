@@ -9,13 +9,70 @@ info:
   license:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0.html
-  version: 1.0.4
+  version: 1.1.0
 servers:
   - url: http://localhost:3200
 tags:
   - name: spice
     description: Describe spices at home
+  - name: auth
+    description: Provide authorization endpoints
 paths:
+  /login:
+    post:
+      tags:
+        - auth
+      summary: Authorize in the application
+      description: User login form to authentificate in the system
+      operationId: login
+      requestBody:
+        description: Authorize in the system and receive access_token and refresh_token
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                login:
+                  type: string
+                  description: User login
+                password:
+                  type: string
+                  description: User password
+      responses:
+        '200':
+          description: Authorization susscesful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccessToken'
+        '401':
+          description: Access denied
+  /refresh:
+    post:
+      tags:
+        - auth
+      summary: Refresh "access_token" after it's expiration.
+      description: The endpoint exchanges refresh_token to the new valid access_token without providing user password.
+      operationId: refreshToken
+      responses:
+        '200':
+          description: Issued a new "access_token"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccessToken'
+        '401':
+          description: User is not authorized
+  /logout:
+    post:
+      tags:
+        - auth
+      summary: Logout user
+      description: Logout user from the system
+      operationId: logout
+      responses:
+        '204':
+          description: User logged out successfully
   /spice:
     post:
       tags:
@@ -43,10 +100,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ValidationError'
-#      security:
-#        - petstore_auth:
-#            - write:pets
-#            - read:pets
+      security:
+        - bearerAuth: []
     put:
       tags:
         - spice
@@ -75,10 +130,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ValidationError'
-#      security:
-#        - petstore_auth:
-#            - write:pets
-#            - read:pets
+      security:
+        - bearerAuth: []
     patch:
       tags:
         - spice
@@ -107,6 +160,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ValidationError'
+      security:
+        - bearerAuth: []
   /spice/{id}:
     get:
       tags:
@@ -131,6 +186,8 @@ paths:
                 $ref: '#/components/schemas/Spice'
         '404':
           description: Spice not found
+      security:
+        - bearerAuth: []
     delete:
       tags:
         - spice
@@ -149,6 +206,8 @@ paths:
           description: Spice is deleted
         '404':
           description: Spice not found
+      security:
+        - bearerAuth: []
   /spice/list/:
     get:
       tags:
@@ -168,6 +227,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/PaginatedResponse'
+      security:
+        - bearerAuth: []
   /spice/list/{status}:
     get:
       tags:
@@ -196,6 +257,8 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/PaginatedResponse'
+      security:
+        - bearerAuth: []
   /spices:
     patch:
       tags:
@@ -230,6 +293,8 @@ paths:
                   $ref: '#/components/schemas/Spice'
         '422':
           description: Status validation error. Wrongly validated statuses are ignored.
+      security:
+        - bearerAuth: []
 components:
   schemas:
     SpiceId:
@@ -328,6 +393,25 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Spice'
+    AccessToken:
+      type: object
+      properties:
+        token_type:
+          type: string
+          description: Authorization token type.
+          example: "Bearer"
+        expired_in:
+          type: integer
+          description: Time in seconds during which the "access_token" is valid.
+          example: 3600
+        access_token:
+          type: string
+          description: JWT token to access protected API endpoints.
+          example: "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIyZGE0MGM1ZWVlNGY3MmY4YWU4MmExNjc5ZGJmNmNkYyIsImp0aSI6IjE3YTljMjllMGIyMWY4MTBiNTk3M2Y5NjJlNDQzMjg0MjQxYmRiMzZjNTdhNDBiYzI1Y2EwYjRiZmU2ZjE4MDljMWRmNjYzYjU0Yzk1MWE0IiwiaWF0IjoxNzA1Mzg4ODYwLjQwOTQ0MywibmJmIjoxNzA1Mzg4ODYwLjQwOTQ0NywiZXhwIjoxNzA1MzkyNDYwLjM3MDg1Mywic3ViIjoibHViYXJ0Iiwic2NvcGVzIjpbInNwaWNlIl19.ZWt2Rxw1UfPjQNO_BlxXO1ejwXlbwwpH6MSmGnCbR1MEtbrPdivTU8gRgdNvzK0P15YGAorF_xqreXo7AqsjwKeO5vK4eHBPUyjK_eAjq6Uks2XJH4VIYhGC1wiRQsOBese3TNzNbDZbbA3FqJajSod3MXDdedaVK82e3nXW526F8Kqkng3EP6QXaYrpS-r2TOky8W_BuveIB65mBnHlYMbCgpZLsJpOtRES47hocpk-cmZOBNnUFODtNT6-vLskxbhxi1DK3CTtqsc_x9ZOfy6SQjLdyrEoZN_N72p5p4G8Q47t18f9khkb6EusqFrsWQK23ci1O4Nsritdr6Jxfg"
+        refresh_token:
+          type: string
+          description: Long-term token to refresh "access_token" after it's expiration.
+          example: "def502006f4bdca05809563e60b6018aa978b2bffcc3b76a1f97799f7c35b1d1191ebcf077dad31d099f8f8deb906d6f4f01a63101f3788298b9dbff0f648001a3e2a3a6b998a4c778a0ebc12492e4b89b0ebcdd7d8618779d1561b8855b39ec3df39e385b0ed435403ddaaea1c9721ef0cd06359b8d7fa9e7061199100ca6b916716786ff6645e371e5b0d57969910e7e0f912e59b919d3e1caa230d0552d9245db8d51da253a2b2fe3e9ea8a4a5764f07da91316a492026f1c88296bc19180346fcae6def34af0fa5b7683872c6899ed367c1694dc031d7d2643055e455ec0cf4e64a4c9555e46ad6bb1d3e910d24cc94b5dea3aa108e4e6cbae9fdffcb9feaed33308a6e68a7768931fdfe01fd900e547baa4f0a1173357099cd2f3956eead30640bca3ba6b419a5aec379deb298cd214576fa4de15035f6d98d693c662a483feaa88cbd916e9e40a08a0bf5f458046c3ad328e8542780342f89b0675792d94575291f968afe91e28661a91fea3f057482bdf2ea3ce2b394c831cb4c60d92326dd8410c34012007b3bc8b893a"
 #    Pet:
 #      description: Pet object that needs to be added to the store
 #      content:
@@ -345,16 +429,20 @@ components:
 #            type: array
 #            items:
 #              $ref: '#/components/schemas/User'
-#  securitySchemes:
-#    petstore_auth:
-#      type: oauth2
-#      flows:
-#        implicit:
-#          authorizationUrl: https://petstore3.swagger.io/oauth/authorize
-#          scopes:
-#            write:pets: modify pets in your account
-#            read:pets: read your pets
-#    api_key:
-#      type: apiKey
-#      name: api_key
-#      in: header
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    spice_auth:
+      type: oauth2
+      flows:
+        implicit:
+          authorizationUrl:   https://petstore3.swagger.io/oauth/authorize
+          scopes:
+            write:pets: modify pets in your account
+            read:pets: read your pets
+    api_key:
+      type: apiKey
+      name: api_key
+      in: header
