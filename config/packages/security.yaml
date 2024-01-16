@@ -21,7 +21,6 @@ security:
             security: true
             stateless: true
             oauth2: true
-#            provider: app_user_provider
         main:
             lazy: true
             provider: app_user_provider
