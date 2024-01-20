@@ -24,19 +24,15 @@ security:
         main:
             lazy: true
             provider: app_user_provider
-
-            # activate different ways to authenticate
-            # https://symfony.com/doc/current/security.html#the-firewall
-
-            # https://symfony.com/doc/current/security/impersonating_user.html
-            # switch_user: true
-    # Easy way to control access for large sections of your site
-    # Note: Only the *first* access control that matches will be used
+            json_login:
+                check_path: login
+            logout:
+                path: /logout
+                target: logout_message
     access_control:
         - { path: ^/spice, roles: ROLE_OAUTH2_SPICE }
-        #- { path: ^/spice, roles: ROLE_USER }
-        #- { path: ^/spice, roles: PUBLIC_ACCESS }
-        # IS_AUTHENTICATED_FULLY
+        - { path: ^/refresh, roles: ROLE_USER }
+        - { path: ^/test, roles: ROLE_USER }
 
 when@test:
     security:

@@ -28,3 +28,10 @@ services:
             - '@security.password_hasher'
         tags:
             - { name: kernel.event_listener, event: league.oauth2_server.event.user_resolve, method: onUserResolve }
+
+    Symfony\Component\PasswordHasher\Hasher\NativePasswordHasher:
+        autowire: true
+        autoconfigure: true
+    Symfony\Component\PasswordHasher\Hasher\UserPasswordHasher:
+        autowire: true
+        autoconfigure: true

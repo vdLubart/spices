@@ -10,9 +10,8 @@ league_oauth2_server:
         default: ['spice']
     persistence:
         doctrine: null
-        #eloquent: null
 
 when@test:
     league_oauth2_server:
         persistence:
-            in_memory: null
+            doctrine: null

@@ -35,7 +35,9 @@ class MassUpdateSpiceTest extends SpiceController
             'status' => 'full',
             'ids' => [1, 2, 3]
         ];
-        $this->client->request('PATCH', '/spices', $_POST);
+        $this->client->request('PATCH', '/spices', $_POST, [], [
+            'HTTP_Authorization' => 'Bearer ' . $this->accessToken
+        ]);
         $responseContent = json_decode($this->client->getResponse()->getContent());
 
         $this->assertResponseIsSuccessful();
@@ -58,7 +60,9 @@ class MassUpdateSpiceTest extends SpiceController
             'status' => 'full',
             'ids' => [1, 2, 'wrong']
         ];
-        $this->client->request('PATCH', '/spices', $_POST);
+        $this->client->request('PATCH', '/spices', $_POST, [], [
+            'HTTP_Authorization' => 'Bearer ' . $this->accessToken
+        ]);
         $responseContent = json_decode($this->client->getResponse()->getContent());
 
         $this->assertResponseIsSuccessful();
@@ -80,7 +84,9 @@ class MassUpdateSpiceTest extends SpiceController
             'status' => $this->faker->word,
             'ids' => [1, 2, 3]
         ];
-        $this->client->request('PATCH', '/spices', $_POST);
+        $this->client->request('PATCH', '/spices', $_POST, [], [
+            'HTTP_Authorization' => 'Bearer ' . $this->accessToken
+        ]);
         $responseContent = json_decode($this->client->getResponse()->getContent());
 
         $this->assertResponseStatusCodeSame(422);
@@ -96,7 +102,9 @@ class MassUpdateSpiceTest extends SpiceController
             'status' => 'full',
             'ids' => ['totally', 'wrong']
         ];
-        $this->client->request('PATCH', '/spices', $_POST);
+        $this->client->request('PATCH', '/spices', $_POST, [], [
+            'HTTP_Authorization' => 'Bearer ' . $this->accessToken
+        ]);
         $responseContent = json_decode($this->client->getResponse()->getContent());
 
         $this->assertResponseIsSuccessful();

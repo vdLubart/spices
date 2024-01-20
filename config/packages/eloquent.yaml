@@ -7,7 +7,3 @@ wouterj_eloquent:
     password: '%env(DB_PASSWORD)%'
     # Uncomment the following line to enable the Eloquent ORM
     eloquent: null
-
-when@test:
-    wouterj_eloquent:
-        database: '%env(DB_DATABASE)%'

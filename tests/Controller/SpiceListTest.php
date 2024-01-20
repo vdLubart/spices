@@ -36,7 +36,9 @@ class SpiceListTest extends SpiceController
 
     /** @test - successfully get all spice list */
     function successfully_get_all_spice_list() {
-        $this->client->request('GET', '/spice/list');
+        $this->client->request('GET', '/spice/list', [], [], [
+            'HTTP_Authorization' => 'Bearer ' . $this->accessToken
+        ]);
         $responseContent = json_decode($this->client->getResponse()->getContent());
 
         $firstSpice = Spice::first();
@@ -52,7 +54,9 @@ class SpiceListTest extends SpiceController
 
     /** @test - get first page with two spices */
     function get_first_page_with_two_spices() {
-        $this->client->request('GET', '/spice/list?perPage=2');
+        $this->client->request('GET', '/spice/list?perPage=2', [], [], [
+            'HTTP_Authorization' => 'Bearer ' . $this->accessToken
+        ]);
         $responseContent = json_decode($this->client->getResponse()->getContent());
 
         $firstSpice = Spice::first();
@@ -68,7 +72,9 @@ class SpiceListTest extends SpiceController
 
     /** @test - get second page with two spices per page */
     function get_second_page_with_two_spices_per_page() {
-        $this->client->request('GET', '/spice/list?perPage=2&page=2');
+        $this->client->request('GET', '/spice/list?perPage=2&page=2', [], [], [
+            'HTTP_Authorization' => 'Bearer ' . $this->accessToken
+        ]);
         $responseContent = json_decode($this->client->getResponse()->getContent());
 
         $lastSpice = Spice::orderBy('id', 'desc')->first();
@@ -84,7 +90,9 @@ class SpiceListTest extends SpiceController
 
     /** @test - get empty list on request third page */
     function get_empty_list_on_request_third_page() {
-        $this->client->request('GET', '/spice/list?perPage=2&page=3');
+        $this->client->request('GET', '/spice/list?perPage=2&page=3', [], [], [
+            'HTTP_Authorization' => 'Bearer ' . $this->accessToken
+        ]);
         $responseContent = json_decode($this->client->getResponse()->getContent());
 
         $this->assertResponseIsSuccessful();
@@ -97,7 +105,9 @@ class SpiceListTest extends SpiceController
 
     /** @test - apply default values on wrong query parameters type */
     function apply_default_values_on_wrong_query_parameters_type() {
-        $this->client->request('GET', '/spice/list?perPage=qwe&page=qwe');
+        $this->client->request('GET', '/spice/list?perPage=qwe&page=qwe', [], [], [
+            'HTTP_Authorization' => 'Bearer ' . $this->accessToken
+        ]);
         $responseContent = json_decode($this->client->getResponse()->getContent());
 
         $this->assertResponseIsSuccessful();
@@ -110,7 +120,9 @@ class SpiceListTest extends SpiceController
 
     /** @test - apply default values on negative query parameters */
     function apply_default_values_on_negative_query_parameters() {
-        $this->client->request('GET', '/spice/list?perPage=-1&page=-1');
+        $this->client->request('GET', '/spice/list?perPage=-1&page=-1', [], [], [
+            'HTTP_Authorization' => 'Bearer ' . $this->accessToken
+        ]);
         $responseContent = json_decode($this->client->getResponse()->getContent());
 
         $this->assertResponseIsSuccessful();
@@ -125,7 +137,9 @@ class SpiceListTest extends SpiceController
     function find_the_spices_by_query() {
         $firstSpice = Spice::first();
 
-        $this->client->request('GET', '/spice/list?q=' . $firstSpice->name);
+        $this->client->request('GET', '/spice/list?q=' . $firstSpice->name, [], [], [
+            'HTTP_Authorization' => 'Bearer ' . $this->accessToken
+        ]);
         $responseContent = json_decode($this->client->getResponse()->getContent());
 
         $this->assertResponseIsSuccessful();
@@ -139,7 +153,9 @@ class SpiceListTest extends SpiceController
 
     /** @test - find spices by status */
     function find_spices_by_status() {
-        $this->client->request('GET', '/spice/list/out_of_stock');
+        $this->client->request('GET', '/spice/list/out_of_stock', [], [], [
+            'HTTP_Authorization' => 'Bearer ' . $this->accessToken
+        ]);
         $responseContent = json_decode($this->client->getResponse()->getContent());
 
         $this->assertResponseIsSuccessful();
@@ -153,7 +169,9 @@ class SpiceListTest extends SpiceController
 
     /** @test - return 404 if status is wrong */
     function return_404_if_status_is_wrong() {
-        $this->client->request('GET', '/spice/list/outOfStock');
+        $this->client->request('GET', '/spice/list/outOfStock', [], [], [
+            'HTTP_Authorization' => 'Bearer ' . $this->accessToken
+        ]);
         json_decode($this->client->getResponse()->getContent());
 
         $this->assertResponseStatusCodeSame(404);

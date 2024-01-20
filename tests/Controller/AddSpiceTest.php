@@ -11,7 +11,9 @@ class AddSpiceTest extends SpiceController {
             'name' => $name = $this->faker->word,
             'status' => $status = 'full'
         ];
-        $this->client->request('POST', '/spice', $_POST);
+        $this->client->request('POST', '/spice', $_POST, [], [
+            'HTTP_Authorization' => 'Bearer ' . $this->accessToken
+        ]);
         $responseContent = json_decode($this->client->getResponse()->getContent());
 
         $this->assertResponseIsSuccessful();
@@ -32,7 +34,9 @@ class AddSpiceTest extends SpiceController {
         $_POST = [
             'status' => 'full'
         ];
-        $this->client->request('POST', '/spice', $_POST);
+        $this->client->request('POST', '/spice', $_POST, [], [
+            'HTTP_Authorization' => 'Bearer ' . $this->accessToken
+        ]);
         $responseContent = json_decode($this->client->getResponse()->getContent());
 
         $this->assertResponseStatusCodeSame(422);
@@ -49,7 +53,9 @@ class AddSpiceTest extends SpiceController {
         $_POST = [
             'name' => $this->faker->name
         ];
-        $this->client->request('POST', '/spice', $_POST);
+        $this->client->request('POST', '/spice', $_POST, [], [
+            'HTTP_Authorization' => 'Bearer ' . $this->accessToken
+        ]);
         $responseContent = json_decode($this->client->getResponse()->getContent());
 
         $this->assertResponseStatusCodeSame(422);
@@ -64,7 +70,9 @@ class AddSpiceTest extends SpiceController {
     /** @test - multiple validation error messages are available */
     function multiple_validation_error_messages_are_available() {
         $_POST = [];
-        $this->client->request('POST', '/spice', $_POST);
+        $this->client->request('POST', '/spice', $_POST, [], [
+            'HTTP_Authorization' => 'Bearer ' . $this->accessToken
+        ]);
         $responseContent = json_decode($this->client->getResponse()->getContent());
 
         $this->assertResponseStatusCodeSame(422);
@@ -81,7 +89,9 @@ class AddSpiceTest extends SpiceController {
             'name' => $this->faker->name,
             'status' => $this->faker->name
         ];
-        $this->client->request('POST', '/spice', $_POST);
+        $this->client->request('POST', '/spice', $_POST, [], [
+            'HTTP_Authorization' => 'Bearer ' . $this->accessToken
+        ]);
         $responseContent = json_decode($this->client->getResponse()->getContent());
 
         $this->assertResponseStatusCodeSame(422);

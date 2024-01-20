@@ -25,7 +25,9 @@ class PatchSpiceTest extends SpiceController
             'id' => $this->spice->id,
             'name' => $name = $this->faker->word
         ];
-        $this->client->request('PATCH', '/spice', $_POST);
+        $this->client->request('PATCH', '/spice', $_POST, [], [
+            'HTTP_Authorization' => 'Bearer ' . $this->accessToken
+        ]);
         $responseContent = json_decode($this->client->getResponse()->getContent());
 
         $this->assertResponseIsSuccessful();
@@ -48,7 +50,9 @@ class PatchSpiceTest extends SpiceController
             'id' => $this->spice->id,
             'status' => $status = 'out of stock'
         ];
-        $this->client->request('PATCH', '/spice', $_POST);
+        $this->client->request('PATCH', '/spice', $_POST, [], [
+            'HTTP_Authorization' => 'Bearer ' . $this->accessToken
+        ]);
         $responseContent = json_decode($this->client->getResponse()->getContent());
 
         $this->assertResponseIsSuccessful();
@@ -70,7 +74,9 @@ class PatchSpiceTest extends SpiceController
         $_POST = [
             'name' => $this->faker->word
         ];
-        $this->client->request('PATCH', '/spice', $_POST);
+        $this->client->request('PATCH', '/spice', $_POST, [], [
+            'HTTP_Authorization' => 'Bearer ' . $this->accessToken
+        ]);
         $responseContent = json_decode($this->client->getResponse()->getContent());
 
         $this->assertResponseStatusCodeSame(422);
@@ -86,7 +92,9 @@ class PatchSpiceTest extends SpiceController
             'id' => $this->spice->id,
             'status' => $this->faker->word
         ];
-        $this->client->request('PATCH', '/spice', $_POST);
+        $this->client->request('PATCH', '/spice', $_POST, [], [
+            'HTTP_Authorization' => 'Bearer ' . $this->accessToken
+        ]);
         $responseContent = json_decode($this->client->getResponse()->getContent());
 
         $this->assertResponseStatusCodeSame(422);

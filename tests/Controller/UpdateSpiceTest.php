@@ -26,7 +26,9 @@ class UpdateSpiceTest extends SpiceController
             'status' => $status = 'full'
         ];
 
-        $this->client->request('PUT', '/spice', $_POST);
+        $this->client->request('PUT', '/spice', $_POST, [], [
+            'HTTP_Authorization' => 'Bearer ' . $this->accessToken
+        ]);
         $responseContent = json_decode($this->client->getResponse()->getContent());
 
         $this->assertResponseIsSuccessful();
@@ -50,7 +52,9 @@ class UpdateSpiceTest extends SpiceController
             'status' => 'full'
         ];
 
-        $this->client->request('PUT', '/spice', $_POST);
+        $this->client->request('PUT', '/spice', $_POST, [], [
+            'HTTP_Authorization' => 'Bearer ' . $this->accessToken
+        ]);
         $responseContent = json_decode($this->client->getResponse()->getContent());
 
         $this->assertResponseStatusCodeSame(422);
@@ -67,7 +71,9 @@ class UpdateSpiceTest extends SpiceController
             'name' => $this->faker->word
         ];
 
-        $this->client->request('PUT', '/spice', $_POST);
+        $this->client->request('PUT', '/spice', $_POST, [], [
+            'HTTP_Authorization' => 'Bearer ' . $this->accessToken
+        ]);
         $responseContent = json_decode($this->client->getResponse()->getContent());
 
         $this->assertResponseStatusCodeSame(422);
@@ -85,7 +91,9 @@ class UpdateSpiceTest extends SpiceController
             'status' => 'full'
         ];
 
-        $this->client->request('PUT', '/spice', $_POST);
+        $this->client->request('PUT', '/spice', $_POST, [], [
+            'HTTP_Authorization' => 'Bearer ' . $this->accessToken
+        ]);
         $responseContent = json_decode($this->client->getResponse()->getContent());
 
         $this->assertResponseStatusCodeSame(422);
@@ -103,7 +111,9 @@ class UpdateSpiceTest extends SpiceController
             'status' => $this->faker->word,
         ];
 
-        $this->client->request('PUT', '/spice', $_POST);
+        $this->client->request('PUT', '/spice', $_POST, [], [
+            'HTTP_Authorization' => 'Bearer ' . $this->accessToken
+        ]);
         $responseContent = json_decode($this->client->getResponse()->getContent());
 
         $this->assertResponseStatusCodeSame(422);

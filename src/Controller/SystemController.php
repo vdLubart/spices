@@ -10,8 +10,8 @@ use Symfony\Component\Routing\Annotation\Route;
 class SystemController extends AbstractController
 {
     #[Route('/{path}', name: 'page_not_found', requirements: ['path' => '.*'])]
-    public function notFound(CreateSpiceRequest $request): Response
+    public function notFound(): Response
     {
-        return $this->json('', 404);
+        return $this->json(['error' => 'Page Not Found'], 404);
     }
 }

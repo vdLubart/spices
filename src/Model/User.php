@@ -4,6 +4,7 @@ namespace App\Model;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -29,5 +30,9 @@ class User extends Model implements UserInterface, PasswordAuthenticatedUserInte
 
     public function spices(): HasMany {
         return $this->hasMany(Spice::class);
+    }
+
+    public function oauthClient(): HasOne {
+        return $this->hasOne(OAuthClient::class, 'identifier', 'client_id');
     }
 }
