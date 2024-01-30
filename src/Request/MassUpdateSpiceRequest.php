@@ -13,6 +13,7 @@ class MassUpdateSpiceRequest extends BaseRequest
     #[Type('array')]
     public array $ids;
 
+    #[NotBlank()]
     #[Choice(callback: 'availableStatuses')]
     public string $status;
 

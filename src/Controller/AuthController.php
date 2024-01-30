@@ -44,7 +44,7 @@ class AuthController extends AbstractController
         return $this->json($responseContent);
     }
 
-    #[Route('/refresh', name: 'refresh', methods: ['POST'])]
+    #[Route('/refresh', name: 'refresh', methods: ['GET'])]
     public function refresh(Request $request, #[CurrentUser] ?User $currentUser, HttpClientInterface $httpClient): Response {
         $client = $currentUser->oauthClient;
         $session = $request->getSession();

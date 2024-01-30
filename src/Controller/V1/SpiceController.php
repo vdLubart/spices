@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller;
+namespace App\Controller\V1;
 
 use App\Contract\Request\ValidatedRequest;
 use App\Model\Spice;
@@ -12,6 +12,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use WouterJ\EloquentBundle\Facade\Db;
+use App\Enum\Status;
 
 class SpiceController extends AbstractController
 {
@@ -87,7 +89,7 @@ class SpiceController extends AbstractController
         '/spice/list/{status?}',
         name: 'get_spice_list',
         methods: ['GET'],
-        requirements: ['status' => '(full|running_out|out_of_stock)']
+        requirements: ['status' => '(full|runningOut|outOfStock)']
     )]
     public function getSpiceList(?string $status, Request $request): Response
     {
@@ -128,5 +130,18 @@ class SpiceController extends AbstractController
         Spice::whereIn('id', $request->ids)->update(['status' => $request->status]);
 
         return $this->json(Spice::find($request->ids), 207);
+    }
+
+    #[Route('/spice/list/statuses', name: 'spice_status_list', methods: ['GET'])]
+    public function spiceStatusesList(): Response {
+        $defaultStatuses = array_combine(Status::values(), [0,0,0]);
+        $statuses = Spice::groupBy('status')
+            ->select([Db::raw('count(id) as count'), 'status'])
+            ->get()
+            ->pluck('count', 'status')->all();
+        $statuses = $statuses + $defaultStatuses;
+        $statuses['all'] = array_sum(array_values($statuses));
+
+        return $this->json($statuses);
     }
 }

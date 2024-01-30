@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('spices', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->enum('status', ['full', 'running out', 'out of stock']);
+            $table->enum('status', ['full', 'runningOut', 'outOfStock']);
             $table->timestamps();
         });
     }

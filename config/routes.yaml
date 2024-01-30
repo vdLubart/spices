@@ -1,5 +1,14 @@
-controllers:
+v1_controller:
     resource:
-        path: ../src/Controller/
-        namespace: App\Controller
+        path: ../src/Controller/V1
+        namespace: App\Controller\V1
+    type: attribute
+    prefix: '/v1'
+
+auth_controller:
+    resource: App\Controller\AuthController
+    type: attribute
+
+system_controller:
+    resource: App\Controller\SystemController
     type: attribute

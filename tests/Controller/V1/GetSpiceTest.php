@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Tests\Controller;
+namespace App\Tests\Controller\V1;
 
 use App\Model\Spice;
 
@@ -20,7 +20,7 @@ class GetSpiceTest extends SpiceController
 
     /** @test - successfully get a spice */
     function successfully_get_a_spice() {
-        $this->client->request('GET', '/spice/' . $this->spice->id, [], [], [
+        $this->client->request('GET', '/v1/spice/' . $this->spice->id, [], [], [
             'HTTP_Authorization' => 'Bearer ' . $this->accessToken
         ]);
         $responseContent = json_decode($this->client->getResponse()->getContent());
@@ -34,7 +34,7 @@ class GetSpiceTest extends SpiceController
 
     /** @test - return 404 status if spice not found */
     function return_404_status_if_spice_not_found() {
-        $this->client->request('GET', '/spice/' . $this->faker->numberBetween(10, 20), [], [], [
+        $this->client->request('GET', '/v1/spice/' . $this->faker->numberBetween(10, 20), [], [], [
             'HTTP_Authorization' => 'Bearer ' . $this->accessToken
         ]);
         $responseContent = json_decode($this->client->getResponse()->getContent());
@@ -45,7 +45,7 @@ class GetSpiceTest extends SpiceController
 
     /** @test - return 404 if spice is id is not numerical */
     function return_404_if_spice_is_id_is_not_numerical() {
-        $this->client->request('GET', '/spice/' . $this->faker->word, [], [], [
+        $this->client->request('GET', '/v1/spice/' . $this->faker->word, [], [], [
             'HTTP_Authorization' => 'Bearer ' . $this->accessToken
         ]);
         json_decode($this->client->getResponse()->getContent());

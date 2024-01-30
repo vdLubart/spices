@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Tests\Controller;
+namespace App\Tests\Controller\V1;
 
 use App\Model\Spice;
 use Illuminate\Database\Eloquent\Model;
@@ -25,7 +25,7 @@ class PatchSpiceTest extends SpiceController
             'id' => $this->spice->id,
             'name' => $name = $this->faker->word
         ];
-        $this->client->request('PATCH', '/spice', $_POST, [], [
+        $this->client->request('PATCH', '/v1/spice', $_POST, [], [
             'HTTP_Authorization' => 'Bearer ' . $this->accessToken
         ]);
         $responseContent = json_decode($this->client->getResponse()->getContent());
@@ -48,9 +48,9 @@ class PatchSpiceTest extends SpiceController
     function successfully_patch_spice_status() {
         $_POST = [
             'id' => $this->spice->id,
-            'status' => $status = 'out of stock'
+            'status' => $status = 'outOfStock'
         ];
-        $this->client->request('PATCH', '/spice', $_POST, [], [
+        $this->client->request('PATCH', '/v1/spice', $_POST, [], [
             'HTTP_Authorization' => 'Bearer ' . $this->accessToken
         ]);
         $responseContent = json_decode($this->client->getResponse()->getContent());
@@ -74,7 +74,7 @@ class PatchSpiceTest extends SpiceController
         $_POST = [
             'name' => $this->faker->word
         ];
-        $this->client->request('PATCH', '/spice', $_POST, [], [
+        $this->client->request('PATCH', '/v1/spice', $_POST, [], [
             'HTTP_Authorization' => 'Bearer ' . $this->accessToken
         ]);
         $responseContent = json_decode($this->client->getResponse()->getContent());
@@ -92,7 +92,7 @@ class PatchSpiceTest extends SpiceController
             'id' => $this->spice->id,
             'status' => $this->faker->word
         ];
-        $this->client->request('PATCH', '/spice', $_POST, [], [
+        $this->client->request('PATCH', '/v1/spice', $_POST, [], [
             'HTTP_Authorization' => 'Bearer ' . $this->accessToken
         ]);
         $responseContent = json_decode($this->client->getResponse()->getContent());

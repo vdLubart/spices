@@ -1,0 +1,18 @@
+nelmio_cors:
+    defaults:
+        origin_regex: true
+        allow_origin: ['%env(CORS_ALLOW_ORIGIN)%']
+        allow_methods: ['GET', 'OPTIONS', 'POST', 'PUT', 'PATCH', 'DELETE']
+        allow_headers: ['Content-Type', 'Authorization']
+        expose_headers: ['Link']
+        allow_credentials: true
+        max_age: 3600
+#    paths:
+#        '^/': null
+
+#To allow sharing cookies between domain:
+#    - on the back-end server issue the cookie with the following headers:
+#          - Access-Control-Allow-Origin: 'http://front-end.web.site
+#          - Access-Control-Allow-Credintials: true
+#    - on the front-end server send a request with the "withCredentials: true":
+#          axios({method, url, data, headers, withCredentials: true});

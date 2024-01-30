@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Tests\Controller;
+namespace App\Tests\Controller\V1;
 
 use App\Model\Migration;
 use App\Model\User;

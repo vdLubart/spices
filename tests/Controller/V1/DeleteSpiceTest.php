@@ -1,9 +1,8 @@
 <?php
 
-namespace App\Tests\Controller;
+namespace App\Tests\Controller\V1;
 
 use App\Model\Spice;
-use App\Tests\Controller\SpiceController;
 
 class DeleteSpiceTest extends SpiceController
 {
@@ -21,7 +20,7 @@ class DeleteSpiceTest extends SpiceController
 
     /** @test - successfully delete spice */
     function successfully_delete_spice() {
-        $this->client->request('DELETE', '/spice/' . $this->spice->id, [], [], [
+        $this->client->request('DELETE', '/v1/spice/' . $this->spice->id, [], [], [
             'HTTP_Authorization' => 'Bearer ' . $this->accessToken
         ]);
         json_decode($this->client->getResponse()->getContent());
@@ -34,7 +33,7 @@ class DeleteSpiceTest extends SpiceController
 
     /** @test - return 404 if spice does not exist */
     function return_404_if_spice_does_not_exist() {
-        $this->client->request('DELETE', '/spice/' . $this->faker->numberBetween(10, 20), [], [], [
+        $this->client->request('DELETE', '/v1/spice/' . $this->faker->numberBetween(10, 20), [], [], [
             'HTTP_Authorization' => 'Bearer ' . $this->accessToken
         ]);
         $responseContent = json_decode($this->client->getResponse()->getContent());
@@ -45,7 +44,7 @@ class DeleteSpiceTest extends SpiceController
 
     /** @test - return 404 if spice is id is not numerical */
     function return_404_if_spice_is_id_is_not_numerical() {
-        $this->client->request('DELETE', '/spice/' . $this->faker->word, [], [], [
+        $this->client->request('DELETE', '/v1/spice/' . $this->faker->word, [], [], [
             'HTTP_Authorization' => 'Bearer ' . $this->accessToken
         ]);
         json_decode($this->client->getResponse()->getContent());

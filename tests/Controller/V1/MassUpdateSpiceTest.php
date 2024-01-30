@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Tests\Controller;
+namespace App\Tests\Controller\V1;
 
 use App\Model\Spice;
 use Illuminate\Database\Eloquent\Model;
@@ -20,12 +20,12 @@ class MassUpdateSpiceTest extends SpiceController
 
         $this->spice = new Spice();
         $this->spice->name = $this->faker->word;
-        $this->spice->status = 'running out';
+        $this->spice->status = 'runningOut';
         $this->spice->save();
 
         $this->spice = new Spice();
         $this->spice->name = $this->faker->word;
-        $this->spice->status = 'out of stock';
+        $this->spice->status = 'outOfStock';
         $this->spice->save();
     }
 
@@ -35,7 +35,7 @@ class MassUpdateSpiceTest extends SpiceController
             'status' => 'full',
             'ids' => [1, 2, 3]
         ];
-        $this->client->request('PATCH', '/spices', $_POST, [], [
+        $this->client->request('PATCH', '/v1/spices', $_POST, [], [
             'HTTP_Authorization' => 'Bearer ' . $this->accessToken
         ]);
         $responseContent = json_decode($this->client->getResponse()->getContent());
@@ -60,7 +60,7 @@ class MassUpdateSpiceTest extends SpiceController
             'status' => 'full',
             'ids' => [1, 2, 'wrong']
         ];
-        $this->client->request('PATCH', '/spices', $_POST, [], [
+        $this->client->request('PATCH', '/v1/spices', $_POST, [], [
             'HTTP_Authorization' => 'Bearer ' . $this->accessToken
         ]);
         $responseContent = json_decode($this->client->getResponse()->getContent());
@@ -75,7 +75,7 @@ class MassUpdateSpiceTest extends SpiceController
 
         $this->assertEquals('full', $spices[0]->status);
         $this->assertEquals('full', $spices[1]->status);
-        $this->assertEquals('out of stock', $spices[2]->status);
+        $this->assertEquals('outOfStock', $spices[2]->status);
     }
 
     /** @test - cannot update spices if status is wrong */
@@ -84,7 +84,7 @@ class MassUpdateSpiceTest extends SpiceController
             'status' => $this->faker->word,
             'ids' => [1, 2, 3]
         ];
-        $this->client->request('PATCH', '/spices', $_POST, [], [
+        $this->client->request('PATCH', '/v1/spices', $_POST, [], [
             'HTTP_Authorization' => 'Bearer ' . $this->accessToken
         ]);
         $responseContent = json_decode($this->client->getResponse()->getContent());
@@ -102,7 +102,7 @@ class MassUpdateSpiceTest extends SpiceController
             'status' => 'full',
             'ids' => ['totally', 'wrong']
         ];
-        $this->client->request('PATCH', '/spices', $_POST, [], [
+        $this->client->request('PATCH', '/v1/spices', $_POST, [], [
             'HTTP_Authorization' => 'Bearer ' . $this->accessToken
         ]);
         $responseContent = json_decode($this->client->getResponse()->getContent());
@@ -114,7 +114,7 @@ class MassUpdateSpiceTest extends SpiceController
         $spices = Spice::all();
 
         $this->assertEquals('full', $spices[0]->status);
-        $this->assertEquals('running out', $spices[1]->status);
-        $this->assertEquals('out of stock', $spices[2]->status);
+        $this->assertEquals('runningOut', $spices[1]->status);
+        $this->assertEquals('outOfStock', $spices[2]->status);
     }
 }
