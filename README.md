@@ -11,7 +11,7 @@ To build the application follow the steps below:
 ```bash
 git clone git@github.com:vdLubart/spices.git
 ```
-
+- rename `.env.example` into `.env`.
 - install composer dependencies:
 
 ```bash
@@ -19,7 +19,14 @@ composer install
 ```
 
 - create sqlite3 database file in the root project with the `spices.sqlite` name.
-- rename `.env.example` into `.env`.
+- migrate oAuth tables:
+```bash
+bin/console doctrine:schema:update --force
+```
+- migrate application tables:
+```bash
+bin/console eloquent:migrate
+```
 - generate the `APP_SECRET` key and store it in the `.env` file
 ```bash
 php -r 'echo bin2hex(random_bytes(16)), PHP_EOL;'
