@@ -25,7 +25,7 @@ class AuthController extends AbstractController
 
         $client = $currentUser->oauthClient;
 
-        $response = $httpClient->request('POST', 'http://spices.home/token', [
+        $response = $httpClient->request('POST', $this->getParameter('oauth.url') . '/token', [
             'body' => [
                 'grant_type' => 'password',
                 'client_id' => $client->identifier,
@@ -49,7 +49,7 @@ class AuthController extends AbstractController
         $client = $currentUser->oauthClient;
         $session = $request->getSession();
 
-        $response = $httpClient->request('POST', 'http://spices.home/token', [
+        $response = $httpClient->request('POST', $this->getParameter('oauth.url') . '/token', [
             'body' => [
                 'grant_type' => 'refresh_token',
                 'client_id' => $client->identifier,
