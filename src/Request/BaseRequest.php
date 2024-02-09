@@ -54,9 +54,21 @@ abstract class BaseRequest implements ValidatedRequest
         return Request::createFromGlobals();
     }
 
+    protected function getRequestContent() {
+        $content = json_decode($this->getRequest()->getContent(), true);
+        if (empty($content)) {
+            $content = $this->getRequest()->request->all();
+            if (empty($content)) {
+                $content = [];
+            }
+        }
+
+        return $content;
+    }
+
     protected function populate(): void
     {
-        foreach ($this->getRequest()->request as $property => $value) {
+        foreach ($this->getRequestContent() as $property => $value) {
             if (property_exists($this, $property)) {
                 $this->{$property} = $value;
                 $this->properties[$property] = $value;

@@ -1,4 +1,5 @@
 .idea
+README_CICD.md
 
 ###> databases ###
 spices*.sqlite

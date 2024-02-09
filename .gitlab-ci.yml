@@ -1,0 +1,49 @@
+default:
+  interruptible: false
+  image: alpine:latest
+
+stages:          # List of stages for jobs, and their order of execution
+  - build
+  - test
+  - deploy
+
+build-app:      # This job runs in the deploy stage.
+  stage: build  # It only runs when *both* jobs in the test stage complete successfully.
+  before_script:
+    - 'command -v ssh-agent >/dev/null || ( apk add --update openssh )'
+    - eval $(ssh-agent -s)
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+    - ssh-keyscan $SSH_HOST >> ~/.ssh/known_hosts
+    - chmod 644 ~/.ssh/known_hosts
+  script:
+    - ssh $SSH_USER@$SSH_HOST "cd $WORK_DIR && git clone $GIT_REPO ./build && cp ../env/.env.test build/.env && cp -r ../env/jwt build/config && cd build && php8.3 /usr/local/bin/composer install && php8.3 bin/console eloquent:migrate && exit"
+
+phpunit:
+  stage: test
+  before_script:
+    - 'command -v ssh-agent >/dev/null || ( apk add --update openssh )'
+    - eval $(ssh-agent -s)
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+    - ssh-keyscan $SSH_HOST >> ~/.ssh/known_hosts
+    - chmod 644 ~/.ssh/known_hosts
+  script:
+    - ssh $SSH_USER@$SSH_HOST "cd $WORK_DIR && cd build && php8.3 ./vendor/bin/phpunit && exit"
+
+deploy-app:
+  stage: deploy
+  before_script:
+    - 'command -v ssh-agent >/dev/null || ( apk add --update openssh )'
+    - eval $(ssh-agent -s)
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+    - ssh-keyscan $SSH_HOST >> ~/.ssh/known_hosts
+    - chmod 644 ~/.ssh/known_hosts
+  script:
+    - ssh $SSH_USER@$SSH_HOST "cd $WORK_DIR && rm -rf build/.env && cp ../env/.env build/.env && mv prod prod_tbd && mv build prod && exit"
+  after_script:
+    - rm -rf ~/.ssh
